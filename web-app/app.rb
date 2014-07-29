@@ -8,7 +8,7 @@ class App < Sinatra::Base
   end
 
   get '/score' do
-    halt 404 unless ![nil, ''].include?(params['guess'])
+    #halt 404 unless ![nil, ''].include?(params['guess'])
     'Your guess of ' + params['guess'] + ' is terrible.'
   end
 end
