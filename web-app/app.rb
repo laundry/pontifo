@@ -12,7 +12,7 @@ class App < Sinatra::Base
   end
 
   get '/type/:q' do
-    redirect('fathomless-crag-2770.herokuapp.com/typer/' + params['q'])
+    redirect('http://fathomless-crag-2770.herokuapp.com/typer/' + params['q'])
   end
 
   get '/score/:guess' do
