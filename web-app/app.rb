@@ -2,6 +2,7 @@ require 'mongo'
 require 'mongo_mapper'
 require 'rubygems'
 require 'sinatra/base'
+require 'yaml'
 
 class App < Sinatra::Base
   include Mongo
