@@ -1,0 +1,8 @@
+development:
+  adapter: mongodb
+  database: pontifo
+  host: localhost
+  port: 27017
+
+production:
+  uri: <%= ENV['MONGOHQ_URL'] %>
