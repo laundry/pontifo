@@ -7,7 +7,15 @@ class App < Sinatra::Base
     "Hello pontifo!"
   end
 
-  get '/score' do
+  get '/fandri' do
+    'Hello fandri'
+  end
+
+  get '/type/:q' do
+    redirect('fathomless-crag-2770.herokuapp.com/typer/' + params['q'])
+  end
+
+  get '/score/:guess' do
     #halt 404 unless ![nil, ''].include?(params['guess'])
     'Your guess of ' + params['guess'] + ' is terrible.'
   end
