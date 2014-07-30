@@ -1,11 +1,22 @@
 require 'mongo'
 require 'mongo_mapper'
+require 'mustache/sinatra'
+require 'require_all'
 require 'rubygems'
 require 'sinatra/base'
 require 'yaml'
 
+require_all 'views'
+
 class App < Sinatra::Base
   include Mongo
+
+  register Mustache::Sinatra
+
+  set :mustache, {
+    :views     => 'views/',
+    :templates => 'templates/'
+  }
 
   enable :logging
 
@@ -16,7 +27,7 @@ class App < Sinatra::Base
   end
 
   get '/' do
-    "Hello pontifo!"
+    mustache(:index)
   end
 
   get '/fandri' do

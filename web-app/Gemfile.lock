@@ -24,11 +24,13 @@ GEM
       activesupport (>= 3.0)
       mongo (~> 1.8)
       plucky (~> 0.6.5)
+    mustache (0.99.6)
     plucky (0.6.6)
       mongo (~> 1.5)
     rack (1.5.2)
     rack-protection (1.5.3)
       rack
+    require_all (1.3.2)
     shotgun (0.9)
       rack (>= 1.0)
     sinatra (1.4.5)
@@ -47,5 +49,7 @@ DEPENDENCIES
   bson_ext
   mongo
   mongo_mapper
+  mustache
+  require_all
   shotgun
   sinatra
