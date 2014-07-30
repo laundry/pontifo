@@ -1,6 +1,6 @@
 # pontifo
 
-## Setting up web-app
+## Setting up the web-app
 
 Ensure you have the following installed:
 
@@ -12,7 +12,7 @@ Set up your Heroku client:
 
  * https://devcenter.heroku.com/articles/quickstart
 
-## Starting web-app locally
+## Starting the web-app locally
 
 From the web-app directory, run:
 
@@ -20,13 +20,14 @@ From the web-app directory, run:
 ./server
 ```
 
-## Deploying web-app
+## Deploying the web-app
 
+From the web-app directory, run
 ```
-git subtree push --prefix web-app heroku master
+./deploy
 ```
 
-When deploying, make sure your changes are also pushed to the github repo by running:
+After deploying, make sure to also push your changes to the github repo by running:
 
 ```
 git push origin master
