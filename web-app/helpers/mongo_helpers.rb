@@ -6,10 +6,8 @@ module MongoHelpers
     config = MongoImporter.config
     name = if config[:username]
       CGI.escape("#{config[:username]}@#{config[:host]}:#{config[:port]}/#{config[:db]}")
-    elsif config[:host] == "localhost"
-      config[:host]
     else
-      "config[:host]:config[:port]"
+      config[:host]
     end
 
     redirect "/admin/db/servers/#{name}/databases/#{config[:db]}/collections/#{collection}"

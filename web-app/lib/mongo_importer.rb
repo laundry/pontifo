@@ -26,8 +26,6 @@ module MongoImporter
         :port => opts['port']
       }
     end
-
-    validate_config!(@@config)
   end
 
   def self.import_json(collection, filename)
@@ -41,12 +39,5 @@ module MongoImporter
     out, err, status = Open3.capture3(cmd)
 
     raise ScriptError, "#{cmd} failed: #{err}" unless status.success?
-  end
-
-  private
-
-  def self.validate_config!(config)
-    raise ArgumentError, "missing :db in #{config}" if config[:db].nil?
-    raise ArgumentError, "missing :host/:port or :uri in #{config}" if config[:uri].nil? && (config[:host].nil? || config[:port].nil?)
   end
 end
