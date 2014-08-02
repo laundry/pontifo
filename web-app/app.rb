@@ -6,10 +6,14 @@ require 'rubygems'
 require 'sinatra/base'
 require 'yaml'
 
+require_all 'config/initializers'
+require_all 'helpers'
+require_all 'lib'
 require_all 'views'
 
 class App < Sinatra::Base
   include Mongo
+  include MongoHelpers
 
   register Mustache::Sinatra
 
@@ -20,18 +24,16 @@ class App < Sinatra::Base
 
   enable :logging
 
-  configure do
-    mongo_config_file = File.new(File.expand_path('./config/mongo.yml', File.dirname(__FILE__)))
-    mongo_config = YAML.load(ERB.new(mongo_config_file.read).result)
-    MongoMapper.setup(mongo_config, settings.environment)
-  end
+  setup_mongo settings
 
   get '/' do
     mustache(:index)
   end
 
-  get '/fandri' do
-    'Hello fandri'
+  get '/admin/import_quotes' do
+    # TODO (tstramer): Call quote generator script
+    MongoImporter.import_json('quotes', './tmp/quotes.json')
+    redirect collection_admin_path('quotes')
   end
 
   get '/type/:q' do
