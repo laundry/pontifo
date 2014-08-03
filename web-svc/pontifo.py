@@ -13,3 +13,7 @@ def score():
     two = request.args.get('two', '')
     return "[%s] to [%s]" % (one, two)
 
+@app.route('/remove', methods=['GET'])
+def remove():
+    sentence = request.args.get('s', '')
+    return '0'
