@@ -29,6 +29,10 @@ class App < Sinatra::Base
 
   setup_mongo settings
 
+  before do
+    headers['Access-Control-Allow-Origin'] = '*'
+  end
+
   get '/' do
     mustache(:index)
   end
