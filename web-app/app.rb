@@ -3,6 +3,7 @@ require 'json'
 require 'mongo'
 require 'mongo_mapper'
 require 'mustache/sinatra'
+require 'open3'
 require 'require_all'
 require 'rubygems'
 require 'sinatra/base'
@@ -59,8 +60,13 @@ class App < Sinatra::Base
   end
 
   get '/admin/import_quotes' do
-    # TODO (tstramer): Call quote generator script
-    MongoImportClient.import_json('quotes', './tmp/quotes.json')
+    tmp_quotes_file = './tmp/quotes.json'
+    if params.has_key?("scrape")
+      cmd = "ruby ./scripts/quote_scraper.rb #{tmp_quotes_file}"
+      out, err, status = Open3.capture3(cmd)
+      raise ScriptError, "#{cmd} failed: #{err}" unless status.success?
+    end
+    MongoImportClient.import_json('quotes', tmp_quotes_file)
     redirect collection_admin_path('quotes')
   end
 end
