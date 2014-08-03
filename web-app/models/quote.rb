@@ -5,5 +5,5 @@ class Quote
   key :speaker, String
   key :character, String # optional
   key :movie_img_url, String # optional
-  key :speaker_img_url, String # optional
+  key :actor_img_url, String # optional
 end

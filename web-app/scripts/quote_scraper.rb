@@ -24,12 +24,14 @@ doc = Nokogiri::HTML(open(URL))
 quotes = doc.css('.wikitable tr').drop(1).collect { |row|
   cells = row.css('td')
   movie = clean(content(cells[4]))
+  actor = clean(content(cells[3]))
   {
     :text => clean(content(cells[1])),
     :character => clean(content(cells[2])),
-    :speaker => clean(content(cells[3])),
+    :speaker => actor,
     :from => movie,
-    :movie_img_url => movie_img_url(movie)
+    :movie_img_url => movie_img_url(movie),
+    :actor_img_url => actor_img_url(actor)
   }
 }
 
