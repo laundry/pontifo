@@ -70,22 +70,19 @@ class App < Sinatra::Base
   def generate_quote
     seen_quote_ids = (session[:quote_ids] || []).to_set
 
-    mongo_quotes = Quote.all.shuffle.select do |quote|
-      !seen_quote_ids.include?(quote[:_id].to_s)
+    mongo_quotes = Quote.all.shuffle.select do |mongo_quote|
+      !seen_quote_ids.include?(mongo_quote[:_id].to_s)
     end 
 
     quote = nil
     mongo_quotes.each do |mongo_quote|
       quote = mongo_quote.serializable_hash
-      text = quote['text']
-      remove_index = TextClient.remove_word(text)
+      remove_index = TextClient.remove_word(quote['text'])
 
       if remove_index >= 0
-        quote.delete('text')
-        quote['tokens'] = text.split(" ")
+        quote['tokens'] = quote['text'].split(" ")
         quote['removed'] = remove_index 
         quote['tokens'].delete_at(quote['removed'])
-        quote['encrypted'] = Digest::MD5.hexdigest(text.downcase.gsub(/[^a-zA-Z0-9]/, ""))
         session[:quote_ids] << quote['id'].to_s
         break 
       end
