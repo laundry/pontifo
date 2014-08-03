@@ -1,7 +1,7 @@
 require 'uri'
 require 'open3'
 
-module MongoImporter
+module MongoClient
 
   @@config = {}
 
@@ -9,9 +9,10 @@ module MongoImporter
     @@config
   end
 
-  def self.setup(opts = {})
-    if opts['uri']
-      uri = URI.parse(opts['uri'])
+  def self.setup(config = {}, environment)
+    env_config = config[environment.to_s]
+    if env_config['uri']
+      uri = URI.parse(env_config['uri'])
       @@config = {
         :db => uri.path.gsub(/^\//, ''),
         :host => uri.host,
@@ -21,9 +22,9 @@ module MongoImporter
       }
     else # local config
       @@config = {
-        :db => opts['database'],
-        :host => opts['host'],
-        :port => opts['port']
+        :db => env_config['database'],
+        :host => env_config['host'],
+        :port => env_config['port']
       }
     end
   end

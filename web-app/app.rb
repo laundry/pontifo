@@ -8,9 +8,9 @@ require 'rubygems'
 require 'sinatra/base'
 require 'yaml'
 
+require_all 'client'
 require_all 'config/initializers'
 require_all 'helpers'
-require_all 'lib'
 require_all 'models'
 require_all 'views'
 
@@ -28,6 +28,7 @@ class App < Sinatra::Base
   enable :logging
 
   setup_mongo settings
+  setup_text_client settings
 
   before do
     headers['Access-Control-Allow-Origin'] = '*'
@@ -48,7 +49,7 @@ class App < Sinatra::Base
       text = quote['text']
       quote.delete('text')
       quote['tokens'] = text.split(" ")
-      quote['removed'] = 0 # TODO (tstramer): call fandri's service
+      quote['removed'] = TextClient.remove_word(text)
       quote['tokens'].delete_at(quote['removed'])
       quote['encrypted'] = Digest::MD5.hexdigest(text)
       quote
@@ -59,7 +60,7 @@ class App < Sinatra::Base
 
   get '/admin/import_quotes' do
     # TODO (tstramer): Call quote generator script
-    MongoImporter.import_json('quotes', './tmp/quotes.json')
+    MongoClient.import_json('quotes', './tmp/quotes.json')
     redirect collection_admin_path('quotes')
   end
 

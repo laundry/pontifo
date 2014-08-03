@@ -3,7 +3,7 @@ require 'cgi'
 module MongoHelpers
 
   def collection_admin_path(collection)
-    config = MongoImporter.config
+    config = MongoClient.config
     name = if config[:username]
       CGI.escape("#{config[:username]}@#{config[:host]}:#{config[:port]}/#{config[:db]}")
     else
