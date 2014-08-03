@@ -1,4 +1,4 @@
-import os, pymongo, json, random
+import os, pymongo, json, random, nltk
 from flask import Flask, request, redirect
 
 app = Flask(__name__)
@@ -8,6 +8,12 @@ local = False
 @app.route('/')
 def pontifo():
     return 'hello from pontifo services'
+
+@app.route('/pos', methods=['GET'])
+def pos_tag():
+    nltk.data.path = ['./data']
+    query = request.args.get('s', '')
+    return str(nltk.tag.pos_tag(query.split(' ')))
 
 def get_relation_collection():
     if local:
