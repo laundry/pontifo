@@ -9,11 +9,20 @@ local = False
 def pontifo():
     return 'hello from pontifo services'
 
+def pos_tag_p(banana):
+    nltk.data.path = ['./data']
+    return nltk.tag.pos_tag(banana)
+
 @app.route('/pos', methods=['GET'])
 def pos_tag():
-    nltk.data.path = ['./data']
     query = request.args.get('s', '')
-    return str(nltk.tag.pos_tag(query.split(' ')))
+    return str(pos_tag_p(query.split(' ')))
+
+@app.route('/pos-test', methods=['GET'])
+def pos_tagg():
+    query = request.args.get('s', '')
+    m = dict(pos_tag_p(query.split(' ')))
+    return str([(m[pk], m[pk].find('NN') != -1) for pk in m.keys()])
 
 def get_relation_collection():
     if local:
@@ -46,38 +55,44 @@ def typer(t):
     return redirect('http://periodic-typer.herokuapp.com/typer/' + t)
 
 FARTHEST = 10
+def distance_score(one, two, collection):
+    if not relation_exist_p(one, collection) or not relation_exist_p(two, collection):
+        return FARTHEST
+    ones = set([one])
+    twos = set([two])
+    for i in range(FARTHEST):
+        if len(ones.intersection(twos)) > 0:
+            return i
+        ones = expand(ones, collection)
+        twos = expand(twos, collection)
+    return FARTHEST
+
 @app.route('/relation-score', methods=['GET'])
 def relation_score():
     one = request.args.get('one', '')
     two = request.args.get('two', '')
     collection = get_relation_collection()
-    if not relation_exist_p(one, collection) or not relation_exist_p(two, collection):
-        return "fock"
-        #return str(FARTHEST)
-    ones = set([one])
-    twos = set([two])
-    for i in range(FARTHEST):
-        if len(ones.intersection(twos)) > 0:
-            return str(i)
-        ones = expand(ones, collection)
-        twos = expand(twos, collection)
-    return str(FARTHEST)
+    return str(distance_score(one, two, collection))
+
+def is_good_pos(pos):
+    return pos.find('NN') >= 0 or pos.find('PRP') >= 0
 
 def remove_p(banana, collection):
     removal_candidates = []
+    banana_pos = dict(pos_tag_p(banana))
     for i in range(len(banana)):
-        if relation_exist_p(banana[i], collection):
+        if relation_exist_p(banana[i], collection) and is_good_pos(banana_pos[banana[i]]):
             removal_candidates.append(i)
     if len(removal_candidates) == 0:
-        return str(-1)
-    return str(random.sample(removal_candidates, 1)[0])
+        return -1
+    return random.sample(removal_candidates, 1)[0]
 
 @app.route('/remove', methods=['GET'])
 def remove():
     sentence = request.args.get('s', '')
     collection = get_relation_collection()
     banana = sentence.split(' ')
-    return remove_p(banana, collection)
+    return str(remove_p(banana, collection))
 
 @app.route('/relation-query', methods=['GET'])
 def relation_query():
