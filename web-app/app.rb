@@ -51,7 +51,6 @@ class App < Sinatra::Base
 
   get '/game/next_quote' do
     content_type :json
-    puts session[:quote_ids]
     generate_quote.to_json
   end
 
@@ -72,7 +71,7 @@ class App < Sinatra::Base
     seen_quote_ids = (session[:quote_ids] || []).to_set
 
     mongo_quotes = Quote.all.shuffle.select do |quote|
-      !seen_quote_ids.include?(quote['id']) 
+      !seen_quote_ids.include?(quote[:_id].to_s)
     end 
 
     quote = nil
@@ -87,7 +86,7 @@ class App < Sinatra::Base
         quote['removed'] = remove_index 
         quote['tokens'].delete_at(quote['removed'])
         quote['encrypted'] = Digest::MD5.hexdigest(text.downcase.gsub(/[^a-zA-Z0-9]/, ""))
-        session[:quote_ids] << quote['id']
+        session[:quote_ids] << quote['id'].to_s
         break 
       end
     end 
