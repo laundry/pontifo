@@ -60,7 +60,7 @@ class App < Sinatra::Base
 
   get '/admin/import_quotes' do
     # TODO (tstramer): Call quote generator script
-    MongoClient.import_json('quotes', './tmp/quotes.json')
+    MongoImportClient.import_json('quotes', './tmp/quotes.json')
     redirect collection_admin_path('quotes')
   end
 end
