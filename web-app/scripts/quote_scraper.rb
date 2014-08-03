@@ -1,6 +1,7 @@
 require 'json'
 require 'nokogiri'
 require 'open-uri'
+require_relative 'movie_info'
 
 def clean(txt)
   txt.gsub(/"/, "").gsub(/\[.*?\]/, "")
@@ -22,11 +23,13 @@ doc = Nokogiri::HTML(open(URL))
 
 quotes = doc.css('.wikitable tr').drop(1).collect { |row|
   cells = row.css('td')
+  movie = clean(content(cells[4]))
   {
     :text => clean(content(cells[1])),
     :character => clean(content(cells[2])),
     :speaker => clean(content(cells[3])),
-    :from => clean(content(cells[4]))
+    :from => movie,
+    :movie_img_url => movie_img_url(movie)
   }
 }
 
