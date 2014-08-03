@@ -51,7 +51,7 @@ class App < Sinatra::Base
       quote['tokens'] = text.split(" ")
       quote['removed'] = TextClient.remove_word(text)
       quote['tokens'].delete_at(quote['removed'])
-      quote['encrypted'] = Digest::MD5.hexdigest(text)
+      quote['encrypted'] = Digest::MD5.hexdigest(text.downcase.gsub(/[^a-zA-Z0-9]/, ""))
       quote
     }
 
