@@ -81,8 +81,8 @@ class App < Sinatra::Base
 
       if remove_index >= 0
         quote['tokens'] = quote['text'].split(" ")
-        quote['removed'] = remove_index 
-        quote['tokens'].delete_at(quote['removed'])
+        quote['removed_index'] = remove_index
+        quote['removed_token'] = quote['tokens'].delete_at(remove_index)
         session[:quote_ids] << quote['id'].to_s
         break 
       end
