@@ -1,7 +1,7 @@
 require 'uri'
 require 'open3'
 
-module MongoClient
+module MongoImportClient
 
   @@config = {}
 
