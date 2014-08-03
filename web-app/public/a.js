@@ -2,7 +2,7 @@
 if(window.location.href!="http://pontifo.herokuapp.com/")
   window.urprefix="http://pontifo.herokuapp.com";
 else
-  window.urprefix="/";
+  window.urprefix="";
 
 (function(){
 window.dloc=document.createElement("div");
