@@ -1,4 +1,4 @@
-import os, pymongo, json, random
+import os, pymongo, json, random, nltk
 from flask import Flask, request, redirect
 
 app = Flask(__name__)
@@ -9,11 +9,19 @@ local = False
 def pontifo():
     return 'hello from pontifo services'
 
+@app.route('/pos', methods=['GET'])
+def pos_tag():
+    nltk.data.path = ['./data']
+    query = request.args.get('s', '')
+    return str(nltk.tag.pos_tag(query.split(' ')))
+
 def get_relation_collection():
     if local:
         c = pymongo.MongoClient('localhost:27017')
     else:
-        c = pymongo.MongoClient('mongodb://pontifo:infopot@kahana.mongohq.com:10061/app28075733')
+        # MONGOLAB
+        c = pymongo.MongoClient('mongodb://pontifo:infopot@ds061199.mongolab.com:61199/heroku_app28075733')
+        # MONGOHQ c = pymongo.MongoClient('mongodb://pontifo:infopot@kahana.mongohq.com:10061/app28075733')
         #c.the_database.authenticate('pontifo', 'infopot', source='relations')
     collection = c.get_default_database()['relations']
     return collection
