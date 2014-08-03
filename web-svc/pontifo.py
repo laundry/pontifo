@@ -19,7 +19,7 @@ def get_relation_collection():
     return collection
 
 def relation_exist_p(query, collection):
-    return query in collection.find({}, {query: 1})[0]
+    return len(query) > 2 and query in collection.find({}, {query: 1})[0]
  
 def relation_query_p(query, collection):
     try:
