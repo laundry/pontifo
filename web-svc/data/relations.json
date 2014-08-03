@@ -1,10 +1,4 @@
 {
-    "A": [
-        "nucleotide",
-        "base",
-        "purine",
-        "letter"
-    ],
     "AB": [
         "baccalaureate"
     ],
@@ -35563,10 +35557,6 @@
     ],
     "asystole": [
         "pathology"
-    ],
-    "at": [
-        "element",
-        "halogen"
     ],
     "ataraxia": [
         "repose",

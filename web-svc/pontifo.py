@@ -1,5 +1,5 @@
 import os, pymongo, json, random
-from flask import Flask, request
+from flask import Flask, request, redirect
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -33,6 +33,10 @@ def expand(ones, collection):
         new_ones.update(relation_query_p(one, collection))
     return new_ones
 
+@app.route('/typer/<t>')
+def typer(t):
+    return redirect('http://periodic-typer.herokuapp.com/typer/' + t)
+
 FARTHEST = 10
 @app.route('/relation-score', methods=['GET'])
 def relation_score():
@@ -51,11 +55,7 @@ def relation_score():
         twos = expand(twos, collection)
     return str(FARTHEST)
 
-@app.route('/remove', methods=['GET'])
-def remove():
-    sentence = request.args.get('s', '')
-    collection = get_relation_collection()
-    banana = sentence.split(' ')
+def remove_p(banana, collection):
     removal_candidates = []
     for i in range(len(banana)):
         if relation_exist_p(banana[i], collection):
@@ -63,6 +63,13 @@ def remove():
     if len(removal_candidates) == 0:
         return str(-1)
     return str(random.sample(removal_candidates, 1)[0])
+
+@app.route('/remove', methods=['GET'])
+def remove():
+    sentence = request.args.get('s', '')
+    collection = get_relation_collection()
+    banana = sentence.split(' ')
+    return remove_p(banana, collection)
 
 @app.route('/relation-query', methods=['GET'])
 def relation_query():
