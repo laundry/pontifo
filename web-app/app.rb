@@ -63,26 +63,4 @@ class App < Sinatra::Base
     MongoClient.import_json('quotes', './tmp/quotes.json')
     redirect collection_admin_path('quotes')
   end
-
-  get '/type/:q' do
-    redirect('http://fathomless-crag-2770.herokuapp.com/typer/' + params['q'])
-  end
-
-  get '/score/:guess' do
-    #halt 404 unless ![nil, ''].include?(params['guess'])
-    'Your guess of ' + params['guess'] + ' is terrible.'
-  end
-
-  get '/fandri' do
-    'Hello fandri'
-  end
-
-  get '/type/:q' do
-    redirect('http://fathomless-crag-2770.herokuapp.com/typer/' + params['q'])
-  end
-
-  get '/score/:guess' do
-    #halt 404 unless ![nil, ''].include?(params['guess'])
-    'Your guess of ' + params['guess'] + ' is terrible.'
-  end
 end
