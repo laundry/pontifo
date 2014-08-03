@@ -28,6 +28,10 @@ class App < Sinatra::Base
 
   enable :logging
 
+  enable :sessions
+
+  set :session_secret, "asdfghjklqwertyuio"
+
   setup_mongo settings
   setup_text_client settings
 
@@ -41,22 +45,14 @@ class App < Sinatra::Base
 
   get '/game/new' do
     content_type :json
+    session[:quote_ids] = []
+    generate_quote.to_json
+  end
 
-    mongo_quotes = Quote.all.sample(10)
-    session[:game_ids] = mongo_quotes.collect { |quote| quote[:_id] }
-
-    quotes = mongo_quotes.collect { |mongo_quote|
-      quote = mongo_quote.serializable_hash
-      text = quote['text']
-      quote.delete('text')
-      quote['tokens'] = text.split(" ")
-      quote['removed'] = TextClient.remove_word(text)
-      quote['tokens'].delete_at(quote['removed'])
-      quote['encrypted'] = Digest::MD5.hexdigest(text.downcase.gsub(/[^a-zA-Z0-9]/, ""))
-      quote
-    }
-
-    quotes.to_json
+  get '/game/next_quote' do
+    content_type :json
+    puts session[:quote_ids]
+    generate_quote.to_json
   end
 
   get '/admin/import_quotes' do
@@ -68,5 +64,34 @@ class App < Sinatra::Base
     end
     MongoImportClient.import_json('quotes', tmp_quotes_file)
     redirect collection_admin_path('quotes')
+  end
+
+  private
+  
+  def generate_quote
+    seen_quote_ids = (session[:quote_ids] || []).to_set
+
+    mongo_quotes = Quote.all.shuffle.select do |quote|
+      !seen_quote_ids.include?(quote['id']) 
+    end 
+
+    quote = nil
+    mongo_quotes.each do |mongo_quote|
+      quote = mongo_quote.serializable_hash
+      text = quote['text']
+      remove_index = TextClient.remove_word(text)
+
+      if remove_index >= 0
+        quote.delete('text')
+        quote['tokens'] = text.split(" ")
+        quote['removed'] = remove_index 
+        quote['tokens'].delete_at(quote['removed'])
+        quote['encrypted'] = Digest::MD5.hexdigest(text.downcase.gsub(/[^a-zA-Z0-9]/, ""))
+        session[:quote_ids] << quote['id']
+        break 
+      end
+    end 
+
+    quote
   end
 end
