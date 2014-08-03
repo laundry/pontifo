@@ -1,7 +1,8 @@
-def setup_mongo(settings)
-  config_file = File.new(File.expand_path("#{settings.root}/config/mongo.yml", File.dirname(__FILE__)))
-  config = YAML.load(ERB.new(config_file.read).result)
+require_relative '../config_helpers'
 
-  MongoImporter.setup(config[settings.environment.to_s])
+def setup_mongo(settings)
+  config = ConfigHelpers.load_yaml_config('mongo.yml', settings)
+
+  MongoClient.setup(config, settings.environment)
   MongoMapper.setup(config, settings.environment)
 end

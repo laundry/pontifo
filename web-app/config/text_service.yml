@@ -1,0 +1,5 @@
+development:
+  uri: http://localhost:5000
+
+production:
+  uri: http://pontifo-svc.herokuapp.com
