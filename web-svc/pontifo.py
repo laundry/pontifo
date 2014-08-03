@@ -1,5 +1,5 @@
 import os, pymongo, json, random
-from flask import Flask, request
+from flask import Flask, request, redirect
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -32,6 +32,10 @@ def expand(ones, collection):
     for one in ones:
         new_ones.update(relation_query_p(one, collection))
     return new_ones
+
+@app.route('/typer/<t>')
+def typer(t):
+    return redirect('http://periodic-typer.herokuapp.com/typer/' + t)
 
 FARTHEST = 10
 @app.route('/relation-score', methods=['GET'])
