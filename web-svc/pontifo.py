@@ -1,4 +1,4 @@
-import os, pymongo, json
+import os, pymongo, json, random
 from flask import Flask, request
 
 app = Flask(__name__)
@@ -49,7 +49,15 @@ def relation_score():
 @app.route('/remove', methods=['GET'])
 def remove():
     sentence = request.args.get('s', '')
-    return '0'
+    collection = get_relation_collection()
+    banana = sentence.split(' ')
+    removal_candidates = []
+    for i in range(len(banana)):
+        if relation_exist_p(banana[i], collection):
+            removal_candidates.append(i)
+    if len(removal_candidates) == 0:
+        return str(-1)
+    return str(random.sample(removal_candidates, 1)[0])
 
 @app.route('/relation-query', methods=['GET'])
 def relation_query():
