@@ -1,3 +1,5 @@
+require 'digest/md5'
+require 'json'
 require 'mongo'
 require 'mongo_mapper'
 require 'mustache/sinatra'
@@ -9,6 +11,7 @@ require 'yaml'
 require_all 'config/initializers'
 require_all 'helpers'
 require_all 'lib'
+require_all 'models'
 require_all 'views'
 
 class App < Sinatra::Base
@@ -28,6 +31,26 @@ class App < Sinatra::Base
 
   get '/' do
     mustache(:index)
+  end
+
+  get '/game/new' do
+    content_type :json
+
+    mongo_quotes = Quote.all.sample(10)
+    session[:game_ids] = mongo_quotes.collect { |quote| quote[:_id] }
+
+    quotes = mongo_quotes.collect { |mongo_quote|
+      quote = mongo_quote.serializable_hash
+      text = quote['text']
+      quote.delete('text')
+      quote['tokens'] = text.split(" ")
+      quote['removed'] = 0 # TODO (tstramer): call fandri's service
+      quote['tokens'].delete_at(quote['removed'])
+      quote['encrypted'] = Digest::MD5.hexdigest(text)
+      quote
+    }
+
+    quotes.to_json
   end
 
   get '/admin/import_quotes' do
