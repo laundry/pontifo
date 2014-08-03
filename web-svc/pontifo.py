@@ -3,14 +3,19 @@ from flask import Flask, request
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
+local = False
 
 @app.route('/')
 def pontifo():
     return 'hello from pontifo services'
 
 def get_relation_collection():
-    c = pymongo.Connection('localhost', 27017)
-    collection = c.db['relations']
+    if local:
+        c = pymongo.MongoClient('localhost:27017')
+    else:
+        c = pymongo.MongoClient('mongodb://pontifo:infopot@kahana.mongohq.com:10061/app28075733')
+        #c.the_database.authenticate('pontifo', 'infopot', source='relations')
+    collection = c.get_default_database()['relations']
     return collection
 
 def relation_exist_p(query, collection):
