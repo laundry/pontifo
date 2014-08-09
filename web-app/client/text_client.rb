@@ -5,7 +5,7 @@ module TextClient
   @@base_uri = ""
 
   def self.setup(config = {}, environment)
-    env_config = config["production"] # TODO: set up dev environment
+    env_config = config[environment.to_s]
     @@base_uri = env_config['uri']
   end
 

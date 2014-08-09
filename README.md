@@ -12,6 +12,14 @@ Set up your Heroku client:
 
  * https://devcenter.heroku.com/articles/quickstart
 
+Install python modules for the web-svc:
+
+```
+cd web-svc
+brew install pip
+pip install -r requirements.txt
+```
+
 ## Starting the web-app locally
 
 From the web-app directory, run:
