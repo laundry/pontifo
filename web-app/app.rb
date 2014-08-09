@@ -1,4 +1,3 @@
-require 'digest/md5'
 require 'json'
 require 'mongo'
 require 'mongo_mapper'
