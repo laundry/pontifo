@@ -118,3 +118,10 @@ def relation_load():
     collection.insert(relations)
     return 'loaded'
 
+@app.route('/relation-load-heavy')
+def relation_load_heavy():
+    collection = get_relation_collection()
+    relations = json.loads(''.join([line for line in open('./data/heavy-relations.json')]))
+    collection.insert(relations)
+    return 'loaded'
+
