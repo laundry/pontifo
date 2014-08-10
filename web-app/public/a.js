@@ -37,13 +37,18 @@ window.preventDefault=function(evt){
   else
     evt.returnValue=false;
 };
-if(window.JSON==undefined){
-  window.JSON={parse:function(input){
-    var tempobj={};
-    if(!/[;|=]/.test(input))
-      eval("tempobj="+input+";")
-    return tempobj;
-  }};
+if(window.JSON==undefined||d.querySelector==undefined){
+  var script=d.createElement("script");
+  script.src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js";
+  script.type="text/javscript";
+  d.appendChild(script);
+  d.querySelector=function(input){
+    return $(input)[0];
+  };
+  window.JSON={};
+  window.JSON.parse=function(input){
+    return $.parseJSON(input);
+  };
 }
 
 intf.attachscore=function(index,ans,real){
