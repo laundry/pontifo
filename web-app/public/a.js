@@ -37,6 +37,14 @@ window.preventDefault=function(evt){
   else
     evt.returnValue=false;
 };
+if(window.JSON==undefined){
+  window.JSON={parse:function(input){
+    var tempobj={};
+    if(!/[;|=]/.test(input))
+      eval("tempobj="+input+";")
+    return tempobj;
+  }};
+}
 
 intf.attachscore=function(index,ans,real){
   if(ans==real){
