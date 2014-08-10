@@ -56,7 +56,7 @@ class App < Sinatra::Base
   get '/game/save' do
     content_type :json
 
-    if params[:name].nil? || params[:name].length == 0 || params[:score].nil?
+    if params[:name].nil? || params[:name].length == 0 || params[:score].nil? || !(params[:score] =~ /\A\d+\z/)
       return {:error => "You must provide name and score"}
     end
 
@@ -70,7 +70,7 @@ class App < Sinatra::Base
   get '/leaderboard' do
     scores = {}
     games = Game.all.each do |game|
-      unless game.name.nil?
+      unless game.name.nil? || game.name.length == 0 || game.score.nil?
         scores[game.name] ||= 0
         scores[game.name] += game.score
       end
