@@ -37,19 +37,6 @@ window.preventDefault=function(evt){
   else
     evt.returnValue=false;
 };
-if(window.JSON==undefined||d.querySelector==undefined){
-  var script=d.createElement("script");
-  script.src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js";
-  script.type="text/javscript";
-  d.body.appendChild(script);
-  d.querySelector=function(input){
-    return $(input)[0];
-  };
-  window.JSON={};
-  window.JSON.parse=function(input){
-    return $.parseJSON(input);
-  };
-}
 
 intf.attachscore=function(index,ans,real){
   if(ans==real){
@@ -272,6 +259,24 @@ intf.fillleaderboard=function(obj){
 
 
 ael(window,"load",function(){
+  if(window.JSON==undefined||d.querySelector==undefined){
+    var script=d.createElement("script");
+    script.src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js";
+    script.type="text/javscript";
+    d.body.appendChild(script);
+    d.querySelector=function(input){
+      return $(input)[0];
+    };
+    window.JSON={};
+    ael(script,"load",function(){
+      window.JSON.parse=function(){
+        return $.parseJSON(input);
+      };
+    });
+    window.JSON.parse=function(input){return false};
+  }
+
+  
   if(window.location.host!="pontifo.herokuapp.com")
     intf.urprefix="http://pontifo.herokuapp.com";
   else
