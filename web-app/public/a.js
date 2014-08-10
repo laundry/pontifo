@@ -93,10 +93,7 @@ window.showquestion=function(id){
   for (var i = 0; i < fields.length; i++) {
     dstr+="<div class="+fields[i]+">"+qobj[fields[i]]+"</div>";
     };
-  dstr+="</form>";
-  if(false){
-    var check=document.createElement("input");
-    check.type="button";}
+  dstr+="</div>";
   dobj.onsubmit=function(qid){
     return function(evt){
       evt.preventDefault();
@@ -106,12 +103,9 @@ window.showquestion=function(id){
   dobj.className="questionall";
   dobj.id="qallid-"+id;
   dobj.innerHTML=dstr;
-  if(false)
-    dobj.appendChild(check);
   window.dloc.appendChild(dobj);
   document.querySelector("input[name=replaced-q"+id+"]").focus();
   window.scrollTo(0,document.body.offsetHeight);
-  this.onsubmit=function(evt){evt.preventDefault();};
 };
 
 window.tryanswer=function(ans,id){
@@ -131,9 +125,9 @@ window.tryanswer=function(ans,id){
     window.qobjs[id].correct=true;
   }else{
     window.qobjs[id].correct=false;
-    congrats.innerText="Go fuck yourself";
+    congrats.innerText="Wrong";
     congrats.style.color="red";
-    congrats.style.fontSize="200%";
+    congrats.style.fontSize="100%";
     congrats.style.textTransform="uppercase";
     var bstr="";
     for (var i = 0; i < window.qobjs[id].tokens.length; i++) {
@@ -156,9 +150,14 @@ window.tryanswer=function(ans,id){
       if(window.qobjs[id+i].correct)
         score++;
     };
+    var scoresub=document.createElement("form");
+    scoresub.onsubmit=window.submitscore;
+    scoresub.id="subuname";
+    scoresub.innerHTML="<input id=uname placeholder='Your name' type=text><input type=button value=Submit>";
+
     var scoreobj=document.createElement("div");
     scoreobj.className="score";
-    scoreobj.innerHTML="You got "+score+"/10 correct"+((score!=10)? "<div class=comment>Go fuck yourself, Andrew</div>" : "");
+    scoreobj.innerHTML="You got "+score+"/10 correct"+((score!=10)? "<div class=comment>=C</div>" : "");
     var restart=document.createElement("input");
     restart.onclick=function(){
       newgame();
@@ -167,6 +166,7 @@ window.tryanswer=function(ans,id){
     restart.type="button";
     restart.value="Play Again?";
     window.dloc.appendChild(scoreobj);
+    window.dloc.appendChild(scoresub);
     window.dloc.appendChild(restart);
     }
   else
@@ -176,9 +176,21 @@ window.tryanswer=function(ans,id){
 
 };
 
+window.submitscore=function(evt){
+  evt.preventDefault();
+  var uname=document.getElementById("uname").value;
+  var xhr=new XMLHttpRequest();
+  var url=window.urprefix+"/game/save";
+  xhr.open("GET",url+"?"+"name="+uname+"&score="+parseInt(document.getElementById("scorer").innerHTML));
+  xhr.send();
+  document.getElementById("subuname").remove();
+};
+
 
 
 (function(){
+if(window.location.pathname!="/")
+  return false;
 if(window.location.href!="http://pontifo.herokuapp.com/")
   window.urprefix="http://pontifo.herokuapp.com";
 else
