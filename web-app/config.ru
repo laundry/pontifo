@@ -1,6 +1,7 @@
 require 'active_support'
-require './app'
 require 'genghis'
+
+require_relative 'app'
 
 use Rack::ShowExceptions
 
