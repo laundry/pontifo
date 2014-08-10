@@ -62,7 +62,7 @@ intf.newgame=function(){
       intf.showquestion(intf.qobjs.length-1);
     }
   };
-  xhr.open("GET",intf.urprefix+( (!intf.qobjs.length||intf.urprefix="") ? "/game/new" : "/game/next_quote" ));
+  xhr.open("GET",intf.urprefix+( (!intf.qobjs.length||intf.urprefix=="") ? "/game/new" : "/game/next_quote" ));
   xhr.send();
 };
 
