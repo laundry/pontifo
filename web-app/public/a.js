@@ -41,7 +41,7 @@ if(window.JSON==undefined||d.querySelector==undefined){
   var script=d.createElement("script");
   script.src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js";
   script.type="text/javscript";
-  d.appendChild(script);
+  d.body.appendChild(script);
   d.querySelector=function(input){
     return $(input)[0];
   };
