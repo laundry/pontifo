@@ -185,6 +185,11 @@ window.submitscore=function(evt){
   var xhr=new XMLHttpRequest();
   var url=window.urprefix+"/game/save";
   xhr.open("GET",url+"?"+"name="+uname+"&score="+parseInt(document.getElementById("scorer").innerHTML));
+  xhr.onreadystatechange=function(){
+    if (xhr.readyState==4){
+      window.location.href="/leaderboard"
+    }
+  }
   xhr.send();
   document.getElementById("subuname").remove();
 };

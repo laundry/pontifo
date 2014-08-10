@@ -1,5 +1,6 @@
 .Leaderboard {
   width: 60%;
+  margin: 0 auto;
 }
 
 .Leaderboard-scores {
@@ -16,11 +17,6 @@
   border: 1px solid #ccc;
 } 
 
-.Leaderboard-scores th {
-  background-color: #4479BA;
-  color: white;
-}
-
 .Leaderboard-scores td {
   text-align: left;
 }
@@ -35,7 +31,7 @@
 }
 
 .Leaderboard-playAgain {
-  float: left;
   width: 100%;
+  float: left;
   box-sizing: border-box;
 }
