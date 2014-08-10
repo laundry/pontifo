@@ -1,6 +1,12 @@
 window.d=document;
 window.d.gebi=window.d.getElementById;
 window.intf={};
+window.rm=function(obj){
+  if(obj.remove!=undefined)
+    obj.remove();
+  else
+    obj.parentNode.removeChild(obj);
+};
 window.ael=function(obj,evt,fnc){
   var altevent=null;
   if(obj==window&&evt=="load"){
@@ -62,7 +68,7 @@ intf.newgame=function(){
       intf.showquestion(intf.qobjs.length-1);
     }
   };
-  xhr.open("GET",intf.urprefix+( (!intf.qobjs.length||intf.urprefix=="") ? "/game/new" : "/game/next_quote" ));
+  xhr.open("GET",intf.urprefix+( (!intf.qobjs.length||intf.urprefix!="") ? "/game/new" : "/game/next_quote" ));
   xhr.send();
 };
 
@@ -190,7 +196,7 @@ intf.tryanswer=function(ans,id){
     restart.id="restartbutton";
     ael(restart,"click",function(){
       intf.newgame();
-      this.remove();
+      rm(restart);
     });
     restart.type="button";
     restart.value="Play Again?";
@@ -202,7 +208,7 @@ intf.tryanswer=function(ans,id){
   else
     intf.newgame();
 
-  d.gebi("qallid-"+id).remove();
+  rm(d.gebi("qallid-"+id));
 
 };
 
@@ -224,7 +230,7 @@ intf.submitscore=function(evt){
   };
   xhr.send();
   d.gebi("restartbutton").focus();
-  form.remove();
+  rm(form);
 };
 
 intf.fillleaderboard=function(obj){
@@ -267,7 +273,7 @@ ael(window,"load",function(){
     ael(restart,"click",function(){
       history.pushState({"state":"newgame"},null,"/");
       intf.newgame();
-      this.remove();
+      rm(restart);
     });
     restart.type="button";
     restart.value="New Game";
