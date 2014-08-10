@@ -1,35 +1,29 @@
 
-if(window.location.href!="http://pontifo.herokuapp.com/")
-  window.urprefix="http://pontifo.herokuapp.com";
-else
-  window.urprefix="";
-
-(function(){
-var hd=document.createElement("h2");
-hd.innerText="Pontifo!";
-window.dloc=document.getElementById("something");
-document.getElementById("persistent").appendChild(hd);
-var scorer=document.createElement("div");
-scorer.id="scorer";
-document.getElementById("persistent").appendChild(scorer);})();
-
 
 window.attachscore=function(index,ans,real){
+  if(ans==real){
+    window.qobjs[index].score=10;
+    window.updatescore(index);
+    return;
+  }
   window.qobjs[index].computing=true;
   var xhr=new XMLHttpRequest();
   xhr.onreadystatechange=function(){
     if(this.readyState==4){
-      window.qobjs[index].score=10*((.5)^parseInt(this.responseText));
-      var that=index%10;
-      var total=0;
-      for (var i = 0; i < that; i++) {
-        total+=window.qobjs[index-i].score;
-      };
-      document.getElementById("scorer").innerHTML=total;}
+      window.qobjs[index].score=Math.round(11*(Math.pow(.843,parseInt(this.responseText)))-1);
+      window.updatescore(index);
+    }
   };
   xhr.open("GET","http://pontifo-svc.herokuapp.com/relation-score?one="+ans+"&two="+real);
   xhr.send();
 }
+window.updatescore=function(index){
+  var total=0;
+  for (var i = 0; i <= index%10; i++) {
+    total+=window.qobjs[index-i].score;
+  };
+  document.getElementById("scorer").innerHTML=total;
+};
 
 window.newgame=function(){
   if(window.qobjs==undefined){
@@ -65,7 +59,14 @@ window.startgame=function(){
     console.log("err");
 };
 
+window.clearscores=function(){
+  document.getElementById("scorer").innerHTML="";
+  document.getElementById("status").innerHTML="";
+};
+
 window.showquestion=function(id){
+  if(id%10==0)
+    window.clearscores();
   var qobj=window.qobjs[id];
   var dobj=document.createElement("form");
   var dstr="<div class=minfo>";
@@ -175,6 +176,19 @@ window.tryanswer=function(ans,id){
 
 };
 
+
+
 (function(){
-  titlescreen();
+if(window.location.href!="http://pontifo.herokuapp.com/")
+  window.urprefix="http://pontifo.herokuapp.com";
+else
+  window.urprefix="";
+var hd=document.createElement("h2");
+hd.innerText="Pontifo!";
+window.dloc=document.getElementById("something");
+document.getElementById("persistent").appendChild(hd);
+var scorer=document.createElement("div");
+scorer.id="scorer";
+document.getElementById("persistent").appendChild(scorer);
+titlescreen();
 })();
