@@ -31,6 +31,12 @@ window.ael=function(obj,evt,fnc){
     }
   }
 };
+window.preventDefault=function(evt){
+  if(evt.preventDefault!=undefined)
+    evt.preventDefault();
+  else
+    evt.returnValue=false;
+};
 
 intf.attachscore=function(index,ans,real){
   if(ans==real){
@@ -129,7 +135,7 @@ intf.showquestion=function(id){
   dstr+="</div>";
   ael(dobj,"submit",function(qid){
     return function(evt){
-      evt.preventDefault();
+      preventDefault(evt);
       var atotry=d.querySelector("input[name=replaced-q"+qid+"]");
       intf.tryanswer(atotry.value,qid);
     };}(id));
@@ -215,7 +221,7 @@ intf.tryanswer=function(ans,id){
 };
 
 intf.submitscore=function(evt){
-  evt.preventDefault();
+  preventDefault(evt);
   var uname=d.gebi("uname").value;
   var xhr=new XMLHttpRequest();
   var url=intf.urprefix+"/game/save";
