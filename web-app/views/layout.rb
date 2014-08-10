@@ -3,6 +3,9 @@ class Layout < Mustache
     @title || "Pontifo"
   end
   def ajstime
-    File.mtime("").toi
+    File.mtime("public/a.js").to_i
+  end
+  def acsstime
+    File.mtime("public/a.css").to_i
   end
 end
