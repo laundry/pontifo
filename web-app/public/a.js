@@ -62,7 +62,7 @@ intf.newgame=function(){
       intf.showquestion(intf.qobjs.length-1);
     }
   };
-  xhr.open("GET",intf.urprefix+( (!intf.qobjs.length||intf.urprefix!="") ? "/game/new" : "/game/next_quote" ));
+  xhr.open("GET",intf.urprefix+( (!intf.qobjs.length||intf.urprefix="") ? "/game/new" : "/game/next_quote" ));
   xhr.send();
 };
 
@@ -245,7 +245,7 @@ intf.fillleaderboard=function(obj){
 
 
 ael(window,"load",function(){
-  if(window.location.href!="http://pontifo.herokuapp.com/")
+  if(window.location.host!="pontifo.herokuapp.com")
     intf.urprefix="http://pontifo.herokuapp.com";
   else
     intf.urprefix="";
