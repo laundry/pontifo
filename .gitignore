@@ -1,3 +1,5 @@
 venv
+web-app/aserver.sh
+web-app/bserver.sh
 *.pyc
 .DS_Store

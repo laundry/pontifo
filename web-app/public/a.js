@@ -1,74 +1,99 @@
+window.d=document;
+window.d.gebi=window.d.getElementById;
+window.intf={};
+window.ael=function(obj,evt,fnc){
+  var altevent=null;
+  if(obj==window&&evt=="load"){
+    altevent="DOMContentLoaded";
+  }
+  if(obj.addEventListener!=undefined){
+    if(altevent==null)
+      obj.addEventListener(evt,fnc,false);
+    else
+      obj.addEventListener(altevent,fnc,false);
+  } else if(obj.attachEvent!=undefined){
+    obj.attachEvent(evt,fnc);
+  } else if(obj["on"+evt]==null){
+    obj["on"+evt]=fnc;
+  } else if(obj["on"+evt]!=null){
+    var oldfnc=obj["on"+evt];
+    obj["on"+evt]=function(event){
+      oldfnc(event);
+      fnc(event);
+    }
+  }
+};
 
-
-window.attachscore=function(index,ans,real){
+intf.attachscore=function(index,ans,real){
   if(ans==real){
-    window.qobjs[index].score=10;
-    window.updatescore(index);
+    intf.qobjs[index].score=10;
+    intf.updatescore(index);
     return;
   }
-  window.qobjs[index].computing=true;
+  intf.qobjs[index].computing=true;
   var xhr=new XMLHttpRequest();
   xhr.onreadystatechange=function(){
     if(this.readyState==4){
-      window.qobjs[index].score=Math.round(11*(Math.pow(.843,parseInt(this.responseText)))-1);
-      window.updatescore(index);
+      intf.qobjs[index].score=Math.round(11*(Math.pow(.843,parseInt(this.responseText)))-1);
+      intf.updatescore(index);
     }
   };
   xhr.open("GET","http://pontifo-svc.herokuapp.com/relation-score?one="+ans+"&two="+real);
   xhr.send();
 }
-window.updatescore=function(index){
+intf.updatescore=function(index){
   var total=0;
   for (var i = 0; i <= index%10; i++) {
-    total+=window.qobjs[index-i].score;
+    total+=intf.qobjs[index-i].score;
   };
-  document.getElementById("scorer").innerHTML=total;
+  d.gebi("scorer").innerHTML=total;
 };
 
-window.newgame=function(){
-  if(window.qobjs==undefined){
-    window.qobjs=[];}
+intf.newgame=function(){
+  if(intf.qobjs==undefined){
+    intf.qobjs=[];}
   var xhr=new XMLHttpRequest();
   xhr.onreadystatechange=function(){
     if(this.readyState==4){
-      if(window.qobjs==undefined)
-        window.qobjs=[];
-      window.qobjs.push(JSON.parse(this.responseText));
-      window.clears();
-      window.showquestion(window.qobjs.length-1);
+      if(intf.qobjs==undefined)
+        intf.qobjs=[];
+      intf.qobjs.push(JSON.parse(this.responseText));
+      intf.clears();
+      intf.showquestion(intf.qobjs.length-1);
     }
   };
-  xhr.open("GET",window.urprefix+( (!window.qobjs.length||window.urprefix!="") ? "/game/new" : "/game/next_quote" ));
+  xhr.open("GET",intf.urprefix+( (!intf.qobjs.length||intf.urprefix!="") ? "/game/new" : "/game/next_quote" ));
   xhr.send();
 };
 
 
-window.clears=function(){
-  document.getElementById("something").innerHTML="";
+intf.clears=function(){
+  d.gebi("something").innerHTML="";
 }
 
-window.titlescreen=function(){
-  var str="<div class=titlescreen><h4>Welcome To</h4><h1>iPontof</h1></div><input type=button onclick='newgame()' value='Start Game'>";
-  document.getElementById("something").innerHTML=str;
+intf.titlescreen=function(){
+  var str="<div class=titlescreen><h4>Welcome To</h4><h1>iPontof</h1></div><input id=restartbutton type=button onclick='intf.newgame()' value='Start Game'>";
+  d.gebi("something").innerHTML=str;
+  d.gebi("restartbutton").focus();
 }
 
-window.startgame=function(){
-  if(window.qobjs.length>0)
-    window.showquestion(0);
+intf.startgame=function(){
+  if(intf.qobjs.length>0)
+    intf.showquestion(0);
   else
     console.log("err");
 };
 
-window.clearscores=function(){
-  document.getElementById("scorer").innerHTML="";
-  document.getElementById("status").innerHTML="";
+intf.clearscores=function(){
+  d.gebi("scorer").innerHTML="";
+  d.gebi("status").innerHTML="";
 };
 
-window.showquestion=function(id){
+intf.showquestion=function(id){
   if(id%10==0)
-    window.clearscores();
-  var qobj=window.qobjs[id];
-  var dobj=document.createElement("form");
+    intf.clearscores();
+  var qobj=intf.qobjs[id];
+  var dobj=d.createElement("form");
   var dstr="<div class=minfo>";
   dstr+="<div class=imgholder>";
   if(qobj.movie_img_url!=undefined&&/pontifo/.test(qobj.movie_img_url))
@@ -94,116 +119,154 @@ window.showquestion=function(id){
     dstr+="<div class="+fields[i]+">"+qobj[fields[i]]+"</div>";
     };
   dstr+="</div>";
-  dobj.onsubmit=function(qid){
+  ael(dobj,"submit",function(qid){
     return function(evt){
       evt.preventDefault();
-      var atotry=document.querySelector("input[name=replaced-q"+qid+"]");
-      window.tryanswer(atotry.value,qid);
-    };}(id);
+      var atotry=d.querySelector("input[name=replaced-q"+qid+"]");
+      intf.tryanswer(atotry.value,qid);
+    };}(id));
   dobj.className="questionall";
   dobj.id="qallid-"+id;
   dobj.innerHTML=dstr;
-  window.dloc.appendChild(dobj);
-  document.querySelector("input[name=replaced-q"+id+"]").focus();
-  window.scrollTo(0,document.body.offsetHeight);
+  intf.dloc.appendChild(dobj);
+  d.querySelector("input[name=replaced-q"+id+"]").focus();
+  window.scrollTo(0,d.body.offsetHeight);
 };
 
-window.tryanswer=function(ans,id){
-  var qall=window.qobjs[id].removed_token.toLowerCase().replace(/[^a-zA-Z0-9]/g, "");
+intf.tryanswer=function(ans,id){
+  var qall=intf.qobjs[id].removed_token.toLowerCase().replace(/[^a-zA-Z0-9]/g, "");
   var tocomp=ans.replace(/[^a-zA-Z0-9]/, "");
   tocomp=tocomp.toLowerCase();
 
-  var congrats=document.createElement("div");
+  var congrats=d.createElement("div");
   congrats.className="congrats";
   var actual="";
-  window.attachscore(id,tocomp,qall);
+  intf.attachscore(id,tocomp,qall);
   if(tocomp==qall){
     congrats.innerText="Correct!";
     congrats.style.color="green";
     congrats.style.fontSize="100%";
     congrats.style.textTransform="uppercase";
-    window.qobjs[id].correct=true;
+    intf.qobjs[id].correct=true;
   }else{
-    window.qobjs[id].correct=false;
+    intf.qobjs[id].correct=false;
     congrats.innerText="Wrong";
     congrats.style.color="red";
     congrats.style.fontSize="100%";
     congrats.style.textTransform="uppercase";
     var bstr="";
-    for (var i = 0; i < window.qobjs[id].tokens.length; i++) {
-      if(i==window.qobjs[id].removed_index)bstr+="<strong>"+window.qobjs[id].removed_token+"</strong> ";
-        bstr+=window.qobjs[id].tokens[i]+" ";
+    for (var i = 0; i < intf.qobjs[id].tokens.length; i++) {
+      if(i==intf.qobjs[id].removed_index)bstr+="<strong>"+intf.qobjs[id].removed_token+"</strong> ";
+        bstr+=intf.qobjs[id].tokens[i]+" ";
     };
     bstr=bstr.substring(0,bstr.length-1-1);
     actual+="The real answer is <br>"+bstr+"<br>You put <strong>\""+ans+"\"</strong>";
   }
-  document.getElementById("status").innerHTML="";
+  d.gebi("status").innerHTML="";
   if(actual!=""){
-    var tmp=document.createElement("div");
+    var tmp=d.createElement("div");
     tmp.innerHTML=actual;
-    document.getElementById("status").appendChild(tmp);}
-  document.getElementById("status").appendChild(congrats);
+    d.gebi("status").appendChild(tmp);}
+  d.gebi("status").appendChild(congrats);
 
-  if(window.qobjs.length%10==0){
+  if(intf.qobjs.length%10==0){
     var score=0;
     for (var i = -9; i < 1; i++) {
-      if(window.qobjs[id+i].correct)
+      if(intf.qobjs[id+i].correct)
         score++;
     };
-    var scoresub=document.createElement("form");
-    scoresub.onsubmit=window.submitscore;
+    var scoresub=d.createElement("form");
+    ael(scoresub,"submit",intf.submitscore)
     scoresub.id="subuname";
     scoresub.innerHTML="<input id=uname placeholder='Your name' type=text>";
-    var tmp=document.createElement("input");
+    var tmp=d.createElement("input");
     tmp.type="button";tmp.value="Submit";
-    tmp.onclick=window.submitscore;
+    ael(tmp,"click",intf.submitscore);
     scoresub.appendChild(tmp);
-    var scoreobj=document.createElement("div");
+    var scoreobj=d.createElement("div");
     scoreobj.className="score";
     scoreobj.innerHTML="You got "+score+"/10 correct"+((score!=10)? "<div class=comment>=C</div>" : "");
-    var restart=document.createElement("input");
-    restart.onclick=function(){
-      newgame();
+    var restart=d.createElement("input");
+    restart.id="restartbutton";
+    ael(restart,"click",function(){
+      intf.newgame();
       this.remove();
-    };
+    });
     restart.type="button";
     restart.value="Play Again?";
-    window.dloc.appendChild(scoreobj);
-    window.dloc.appendChild(scoresub);
-    window.dloc.appendChild(restart);
+    intf.dloc.appendChild(scoreobj);
+    intf.dloc.appendChild(scoresub);
+    intf.dloc.appendChild(restart);
+    d.gebi("uname").focus();
     }
   else
-    newgame();
+    intf.newgame();
 
-  document.getElementById("qallid-"+id).remove();
+  d.gebi("qallid-"+id).remove();
 
 };
 
-window.submitscore=function(evt){
+intf.submitscore=function(evt){
   evt.preventDefault();
-  var uname=document.getElementById("uname").value;
+  var uname=d.gebi("uname").value;
   var xhr=new XMLHttpRequest();
-  var url=window.urprefix+"/game/save";
-  xhr.open("GET",url+"?"+"name="+uname+"&score="+parseInt(document.getElementById("scorer").innerHTML));
+  var url=intf.urprefix+"/game/save";
+  xhr.open("GET",url+"?"+"name="+uname+"&score="+parseInt(d.gebi("scorer").innerHTML));
   xhr.send();
-  document.getElementById("subuname").remove();
+  var form=d.gebi("subuname");
+  var leaders=d.createElement("div");leaders.className="leaderboard";leaders.innerHTML="";
+  form.parentNode.insertBefore(leaders,form.nextSibling);
+  intf.fillleaderboard(leaders);
+  d.gebi("restartbutton").focus();
+  form.remove();
+};
+
+intf.fillleaderboard=function(obj){
+  var xhr=new XMLHttpRequest();
+  xhr.onreadystatechange=function(){
+    if(this.readyState==4){
+      var sout="<div><div>Name</div><div>Score</div></div>";
+      var ldata=JSON.parse(this.responseText);
+      for (var i = 0; i < ldata.length; i++) {
+        sout+="<div><div>"+ldata[i].name+"</div><div>"+ldata[i].score+"</div></div>";
+      };
+      obj.innerHTML=sout;
+    }
+  }
+  xhr.open("GET","/game/leaders");
+  xhr.send();
 };
 
 
 
-(function(){
-if(window.location.pathname!="/")
-  return false;
-if(window.location.href!="http://pontifo.herokuapp.com/")
-  window.urprefix="http://pontifo.herokuapp.com";
-else
-  window.urprefix="";
-var hd=document.createElement("h2");
-hd.innerText="Pontifo!";
-window.dloc=document.getElementById("something");
-document.getElementById("persistent").appendChild(hd);
-var scorer=document.createElement("div");
-scorer.id="scorer";
-document.getElementById("persistent").appendChild(scorer);
-titlescreen();
-})();
+ael(window,"load",function(){
+  if(window.location.href!="http://pontifo.herokuapp.com/")
+    intf.urprefix="http://pontifo.herokuapp.com";
+  else
+    intf.urprefix="";
+  var hd=d.createElement("h2");
+  hd.innerText="Pontifo!";
+  intf.dloc=d.gebi("something");
+  d.gebi("persistent").appendChild(hd);
+  var scorer=d.createElement("div");
+  scorer.id="scorer";
+  d.gebi("persistent").appendChild(scorer);
+
+  if(window.location.pathname=="/"){
+    intf.titlescreen();}
+  else if(window.location.pathname=="/leaderboard"){
+    var leaders=d.createElement("div");leaders.className="leaderboard";leaders.innerHTML="";
+    intf.dloc.appendChild(leaders);
+    intf.fillleaderboard(leaders);
+    var restart=d.createElement("input");
+    ael(restart,"click",function(){
+      history.pushState({"state":"newgame"},null,"/");
+      intf.newgame();
+      this.remove();
+    });
+    restart.type="button";
+    restart.value="New Game";
+    intf.dloc.appendChild(restart);
+    restart.focus();
+  }
+});

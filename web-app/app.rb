@@ -62,21 +62,33 @@ class App < Sinatra::Base
     
     {}
   end
-
-  get '/leaderboard' do
+  get '/game/leaders' do
+    content_type :json
     scores = {}
     games = Game.all.each do |game|
       scores[game.name] ||= 0
       scores[game.name] += game.score
     end
-
     leaderboard = scores.collect do |name, score|
       {:name => name, :score => score}
     end
+    leaderboard.to_json
+  end
+  get '/leaderboard' do
+    # scores = {}
+    # games = Game.all.each do |game|
+    #   scores[game.name] ||= 0
+    #   scores[game.name] += game.score
+    # end
 
-    leaderboard.sort! { |a, b| b[:score] <=> a[:score] }
+    # leaderboard = scores.collect do |name, score|
+    #   {:name => name, :score => score}
+    # end
 
-    mustache(:leaderboard, {}, {:leaderboard => leaderboard})
+    # leaderboard.sort! { |a, b| b[:score] <=> a[:score] }
+
+    # mustache(:leaderboard, {}, {:leaderboard => leaderboard})
+    mustache(:index)
   end
 
   get '/admin/import_quotes' do
