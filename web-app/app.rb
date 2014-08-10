@@ -56,7 +56,7 @@ class App < Sinatra::Base
   get '/game/save' do
     content_type :json
 
-    if params[:name].nil? || params[:name].length == 0 || params[:score].nil? || !(params[:score] =~ /\A\d+\z/)
+    if params[:name].nil? || params[:name].length == 0 || params[:score].nil?
       return {:error => "You must provide name and score"}
     end
 
