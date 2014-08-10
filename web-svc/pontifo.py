@@ -90,7 +90,10 @@ def relation_score():
     one = request.args.get('one', '')
     two = request.args.get('two', '')
     collection = get_relation_collection()
-    return str(distance_score(one, two, collection))
+    sout=str(distance_score(one, two, collection))
+    resp=make_response(sout,200)
+    resp.headers["Access-Control-Allow-Origin"]="*"
+    return resp
 
 @app.route('/relation-query', methods=['GET'])
 def relation_query():

@@ -5,24 +5,31 @@ else
   window.urprefix="";
 
 (function(){
-window.dloc=document.createElement("div");
-window.dloc.id="something";
 var hd=document.createElement("h2");
 hd.innerText="Pontifo!";
-window.dloc.appendChild(hd);
+window.dloc=document.getElementById("something");
+document.getElementById("persistent").appendChild(hd);
 var scorer=document.createElement("div");
 scorer.id="scorer";
-window.dloc.appendChild(scorer);
-document.body.appendChild(window.dloc);})();
-
-(function(){
-  return false;
-var mds=document.createElement("script");
-mds.src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/md5.js";
-document.body.appendChild(mds);})();
+document.getElementById("persistent").appendChild(scorer);})();
 
 
-window.dloc=document.getElementById("something");
+window.attachscore=function(index,ans,real){
+  window.qobjs[index].computing=true;
+  var xhr=new XMLHttpRequest();
+  xhr.onreadystatechange=function(){
+    if(this.readyState==4){
+      window.qobjs[index].score=10*((.5)^parseInt(this.responseText));
+      var that=index%10;
+      var total=0;
+      for (var i = 0; i < that; i++) {
+        total+=window.qobjs[index-i].score;
+      };
+      document.getElementById("scorer").innerHTML=total;}
+  };
+  xhr.open("GET","http://pontifo-svc.herokuapp.com/relation-score?one="+ans+"&two="+real);
+  xhr.send();
+}
 
 window.newgame=function(){
   if(window.qobjs==undefined){
@@ -33,6 +40,7 @@ window.newgame=function(){
       if(window.qobjs==undefined)
         window.qobjs=[];
       window.qobjs.push(JSON.parse(this.responseText));
+      window.clears();
       window.showquestion(window.qobjs.length-1);
     }
   };
@@ -40,27 +48,16 @@ window.newgame=function(){
   xhr.send();
 };
 
-(function(){
-  var ss=document.createElement("style");
-  ss.type="text/css";
-  var txt="*{font-family:sans-serif;}";
-  txt+="#something h2{text-align:center;background:#DDDDFF;}";
-  txt+="#something{display:block;max-width:600px;width:80%;margin:0 auto;}";
-  txt+=".question{font-size:120%;margin-bottom:.5em;}";
-  txt+=".question input{width: 5em;vertical-align:middle;margin-right:.5em;}";
-  txt+=".question .qpart{vertical-align:middle;display:inline-block;}";
-  txt+=".questionall img{ max-width:100%;}";
-  txt+=".questionall .imgholder{display:inline-block;width:20%;}";
-  txt+=".questionall .question{ display:inline-block;width:70%;padding-left:5%;padding-right:5%;vertical-align:top;}";
-  txt+=".questionall:last-child {margin-bottom:5em;}";
-  txt+=".character, .speaker, .from{font-size:75%;color:#888888;}";
-  if(false)
-    txt+=".congrats:after{content:\"!\";}"
-  txt+=".comment{color:red;font-size:200%;text-transform:uppercase;}";
-  ss.innerHTML=txt;
-  document.body.appendChild(ss);
-  newgame();
-})();
+
+window.clears=function(){
+  document.getElementById("something").innerHTML="";
+}
+
+window.titlescreen=function(){
+  var str="<div class=titlescreen><h4>Welcome To</h4><h1>iPontof</h1></div><input type=button onclick='newgame()' value='Start Game'>";
+  document.getElementById("something").innerHTML=str;
+}
+
 window.startgame=function(){
   if(window.qobjs.length>0)
     window.showquestion(0);
@@ -71,14 +68,17 @@ window.startgame=function(){
 window.showquestion=function(id){
   var qobj=window.qobjs[id];
   var dobj=document.createElement("form");
-  var dstr="<div class=imgholder>";
+  var dstr="<div class=minfo>";
+  dstr+="<div class=imgholder>";
   if(qobj.movie_img_url!=undefined&&/pontifo/.test(qobj.movie_img_url))
     dstr+="<img src='"+qobj.movie_img_url+"'>";
-  dstr+="<div class=from>"+qobj.from+"</div>";
+  dstr+="<div class=from>"+qobj.from+"</div></div>";
+  dstr+="<div class=imgholder>";
   if(qobj.actor_img_url!=undefined&&/pontifo/.test(qobj.actor_img_url))
-    dstr+="<br><img src='"+qobj.actor_img_url+"'>";
-  dstr+="<div class=from>"+qobj.speaker+"</div>";
-  dstr+="</div><div class=question id='qid-"+id+"'>";
+    dstr+="<img src='"+qobj.actor_img_url+"'>";
+  dstr+="<div class=speaker>"+qobj.speaker+"</div>";
+  dstr+="<div class=character>"+qobj.character+"</div>";
+  dstr+="</div></div><div class=question id='qid-"+id+"'>";
   for (var i = 0; i <= qobj.tokens.length; i++) {
     if(i==qobj.removed_index)
       dstr+="<input type=text name='replaced-q"+id+"'>";
@@ -88,7 +88,7 @@ window.showquestion=function(id){
     dstr+=tin+" ";
     };
   dstr+="</div>";
-  var fields=["character"];
+  var fields=[];
   for (var i = 0; i < fields.length; i++) {
     dstr+="<div class="+fields[i]+">"+qobj[fields[i]]+"</div>";
     };
@@ -121,34 +121,33 @@ window.tryanswer=function(ans,id){
   var congrats=document.createElement("div");
   congrats.className="congrats";
   var actual="";
+  window.attachscore(id,tocomp,qall);
   if(tocomp==qall){
     congrats.innerText="Correct!";
     congrats.style.color="green";
     congrats.style.fontSize="100%";
     congrats.style.textTransform="uppercase";
     window.qobjs[id].correct=true;
-  }
-  else{
+  }else{
     window.qobjs[id].correct=false;
     congrats.innerText="Go fuck yourself";
     congrats.style.color="red";
     congrats.style.fontSize="200%";
     congrats.style.textTransform="uppercase";
-    actual+="The real answer is <br>"+window.qobjs[id].text+"<br>You put \""+ans+"\"";
-    if(false)
-      for (var i = 0; i <= window.qobjs[id].tokens.length; i++) {
-        if(i==window.qobjs[id].removed_index)
-          actual+=window.qobjs[id].text+" ";
-        if(i==window.qobjs[id].tokens.length)
-          break;
-        actual+=window.qobjs[id].tokens[i]+" ";
-      };
+    var bstr="";
+    for (var i = 0; i < window.qobjs[id].tokens.length; i++) {
+      if(i==window.qobjs[id].removed_index)bstr+="<strong>"+window.qobjs[id].removed_token+"</strong> ";
+        bstr+=window.qobjs[id].tokens[i]+" ";
+    };
+    bstr=bstr.substring(0,bstr.length-1-1);
+    actual+="The real answer is <br>"+bstr+"<br>You put <strong>\""+ans+"\"</strong>";
   }
+  document.getElementById("status").innerHTML="";
   if(actual!=""){
     var tmp=document.createElement("div");
     tmp.innerHTML=actual;
-    document.getElementById("something").appendChild(tmp);}
-  document.getElementById("something").appendChild(congrats);
+    document.getElementById("status").appendChild(tmp);}
+  document.getElementById("status").appendChild(congrats);
 
   if(window.qobjs.length%10==0){
     var score=0;
@@ -175,3 +174,7 @@ window.tryanswer=function(ans,id){
   document.getElementById("qallid-"+id).remove();
 
 };
+
+(function(){
+  titlescreen();
+})();
