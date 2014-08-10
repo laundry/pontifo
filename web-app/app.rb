@@ -66,8 +66,10 @@ class App < Sinatra::Base
   get '/leaderboard' do
     scores = {}
     games = Game.all.each do |game|
-      scores[game.name] ||= 0
-      scores[game.name] += game.score
+      unless game.name.nil?
+        scores[game.name] ||= 0
+        scores[game.name] += game.score
+      end
     end
 
     leaderboard = scores.collect do |name, score|
