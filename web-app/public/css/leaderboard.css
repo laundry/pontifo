@@ -1,0 +1,41 @@
+.Leaderboard {
+  width: 60%;
+}
+
+.Leaderboard-scores {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding: 0;
+}
+
+.Leaderboard-scores td, 
+.Leaderboard-scores th {
+  padding: 5px;
+  border: 1px solid #ccc;
+} 
+
+.Leaderboard-scores th {
+  background-color: #4479BA;
+  color: white;
+}
+
+.Leaderboard-scores td {
+  text-align: left;
+}
+
+.Leaderboard-scores td:nth-child(1) {
+  width: 80%;
+}
+
+.Leaderboard-scores td:nth-child(2) {
+  width: 20%;
+  color: green;
+}
+
+.Leaderboard-playAgain {
+  float: left;
+  width: 100%;
+  box-sizing: border-box;
+}
