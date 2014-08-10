@@ -20,7 +20,7 @@ window.ael=function(obj,evt,fnc){
     else
       obj.addEventListener(altevent,fnc,false);
   } else if(obj.attachEvent!=undefined){
-    obj.attachEvent(evt,fnc);
+    obj.attachEvent("on"+evt,fnc);
   } else if(obj["on"+evt]==null){
     obj["on"+evt]=fnc;
   } else if(obj["on"+evt]!=null){
