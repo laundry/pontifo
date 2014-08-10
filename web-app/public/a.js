@@ -265,7 +265,7 @@ ael(window,"load",function(){
       return $(input)[0];
     };
     window.JSON={};
-    window.JSON.parse=function(){
+    window.JSON.parse=function(input){
       return $.parseJSON(input);
     };
   }
