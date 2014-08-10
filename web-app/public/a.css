@@ -2,7 +2,7 @@
 body{text-align: center;width: 100%;}
 .content.container h2{text-align:center;background:#DDDDFF;}
 .content.container{display:inline-block;width:80%;max-width:600px;}
-.question{font-size:120%;margin-bottom:.5em;}
+.question{font-size:120%;margin-bottom:.5em;text-align: left;}
 .question input{width: 5em;vertical-align:middle;margin-right:.5em;}
 .question .qpart{vertical-align:middle;display:inline-block;}
 .questionall img{ max-width:100%;}

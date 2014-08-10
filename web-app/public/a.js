@@ -153,8 +153,11 @@ window.tryanswer=function(ans,id){
     var scoresub=document.createElement("form");
     scoresub.onsubmit=window.submitscore;
     scoresub.id="subuname";
-    scoresub.innerHTML="<input id=uname placeholder='Your name' type=text><input type=button value=Submit>";
-
+    scoresub.innerHTML="<input id=uname placeholder='Your name' type=text>";
+    var tmp=document.createElement("input");
+    tmp.type="button";tmp.value="Submit";
+    tmp.onclick=window.submitscore;
+    scoresub.appendChild(tmp);
     var scoreobj=document.createElement("div");
     scoreobj.className="score";
     scoreobj.innerHTML="You got "+score+"/10 correct"+((score!=10)? "<div class=comment>=C</div>" : "");
