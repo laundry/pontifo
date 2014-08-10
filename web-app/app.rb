@@ -56,6 +56,10 @@ class App < Sinatra::Base
   get '/game/save' do
     content_type :json
 
+    if params[:name].nil? || params[:name].length == 0 || params[:score].nil?
+      return {:error => "You must provide name and score"}
+    end
+
     game = Game.new
     game.update_attributes(:name => params[:name], :score => params[:score])
     game.save!
@@ -66,8 +70,10 @@ class App < Sinatra::Base
     content_type :json
     scores = {}
     games = Game.all.each do |game|
-      scores[game.name] ||= 0
-      scores[game.name] += game.score
+      unless game.name.nil? || game.name.length == 0 || game.score.nil?
+        scores[game.name] ||= 0
+        scores[game.name] += game.score
+      end
     end
     leaderboard = scores.collect do |name, score|
       {:name => name, :score => score}

@@ -1,0 +1,37 @@
+.Leaderboard {
+  width: 60%;
+  margin: 0 auto;
+}
+
+.Leaderboard-scores {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding: 0;
+}
+
+.Leaderboard-scores td, 
+.Leaderboard-scores th {
+  padding: 5px;
+  border: 1px solid #ccc;
+} 
+
+.Leaderboard-scores td {
+  text-align: left;
+}
+
+.Leaderboard-scores td:nth-child(1) {
+  width: 80%;
+}
+
+.Leaderboard-scores td:nth-child(2) {
+  width: 20%;
+  color: green;
+}
+
+.Leaderboard-playAgain {
+  width: 100%;
+  float: left;
+  box-sizing: border-box;
+}

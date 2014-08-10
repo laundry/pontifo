@@ -212,11 +212,17 @@ intf.submitscore=function(evt){
   var xhr=new XMLHttpRequest();
   var url=intf.urprefix+"/game/save";
   xhr.open("GET",url+"?"+"name="+uname+"&score="+parseInt(d.gebi("scorer").innerHTML));
-  xhr.send();
   var form=d.gebi("subuname");
-  var leaders=d.createElement("div");leaders.className="leaderboard";leaders.innerHTML="";
-  form.parentNode.insertBefore(leaders,form.nextSibling);
-  intf.fillleaderboard(leaders);
+  var fparent=form.parentNode;
+  var where=form.nextSibling;
+  xhr.onreadystatechange=function(){
+    if (xhr.readyState==4){
+      var leaders=d.createElement("div");leaders.className="leaderboard";leaders.innerHTML="";
+      fparent.insertBefore(leaders,where);
+      intf.fillleaderboard(leaders);
+    }
+  };
+  xhr.send();
   d.gebi("restartbutton").focus();
   form.remove();
 };
@@ -236,7 +242,6 @@ intf.fillleaderboard=function(obj){
   xhr.open("GET","/game/leaders");
   xhr.send();
 };
-
 
 
 ael(window,"load",function(){

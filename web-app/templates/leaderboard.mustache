@@ -1,17 +1,19 @@
-<h3>Leaderboard</h3>
+<link rel=stylesheet type=text/css href=/css/leaderboard.css?v={{acsstime}}>
 
-<table>
-  <tr>
-    <th> Name </th>
-    <th> Score </th>
-  </tr>
-  {{#leaderboard}}
-  <tr>
-    <td> {{name}} </td>
-    <td> {{score}} </td>
-  </tr>
-  {{/leaderboard}}
-</table>
+<h2>Pontifo</h2>
 
-<hr/>
-<a href="/">New game</a>
+<div class="Leaderboard">
+  <table class="Leaderboard-scores">
+    <tr>
+      <th colspan="2">Leaderboard</th>
+    </tr>
+    {{#leaderboard}}
+    <tr>
+      <td>{{name}}</td>
+      <td>{{score}}</td>
+    </tr>
+    {{/leaderboard}}
+  </table>
+
+  <a class="Leaderboard-playAgain button" href="/">Play again</a>
+</div>
