@@ -53,6 +53,32 @@ class App < Sinatra::Base
     generate_quote.to_json
   end
 
+  get '/game/save' do
+    content_type :json
+
+    game = Game.new
+    game.update_attributes(:name => params[:name], :score => params[:score])
+    game.save!
+    
+    {}
+  end
+
+  get '/leaderboard' do
+    scores = {}
+    games = Game.all.each do |game|
+      scores[game.name] ||= 0
+      scores[game.name] += game.score
+    end
+
+    leaderboard = scores.collect do |name, score|
+      {:name => name, :score => score}
+    end
+
+    leaderboard.sort! { |a, b| b[:score] <=> a[:score] }
+
+    mustache(:leaderboard, {}, {:leaderboard => leaderboard})
+  end
+
   get '/admin/import_quotes' do
     tmp_quotes_file = './tmp/quotes.json'
     if params.has_key?("scrape")

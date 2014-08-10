@@ -1,0 +1,2 @@
+class Leaderboard < Layout
+end
