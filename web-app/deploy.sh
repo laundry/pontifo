@@ -1,2 +1,2 @@
 cd "$(git rev-parse --show-toplevel)"
-git subtree push --prefix web-app heroku master
+git push heroku `git subtree split --prefix web-app master`:master --force
