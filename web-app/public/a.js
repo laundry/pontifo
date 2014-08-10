@@ -1,4 +1,9 @@
 window.d=document;
+window.ac=function(obj,child){
+  if(obj.appendChild==undefined)
+    throw "need appendChild";
+  obj.appendChild(child);
+};
 window.d.gebi=window.d.getElementById;
 window.intf={};
 if(window.history.pushState==undefined)
@@ -142,7 +147,7 @@ intf.showquestion=function(id){
   dobj.className="questionall";
   dobj.id="qallid-"+id;
   dobj.innerHTML=dstr;
-  intf.dloc.appendChild(dobj);
+  ac(intf.dloc,dobj);
   d.querySelector("input[name=replaced-q"+id+"]").focus();
   window.scrollTo(0,d.body.offsetHeight);
 };
@@ -180,8 +185,8 @@ intf.tryanswer=function(ans,id){
   if(actual!=""){
     var tmp=d.createElement("div");
     tmp.innerHTML=actual;
-    d.gebi("status").appendChild(tmp);}
-  d.gebi("status").appendChild(congrats);
+    ac(d.gebi("status"),tmp);}
+  ac(d.gebi("status"),congrats);
 
   if(intf.qobjs.length%10==0){
     var score=0;
@@ -196,7 +201,7 @@ intf.tryanswer=function(ans,id){
     var tmp=d.createElement("input");
     tmp.type="button";tmp.value="Submit";
     ael(tmp,"click",intf.submitscore);
-    scoresub.appendChild(tmp);
+    ac(scoresub,tmp);
     var scoreobj=d.createElement("div");
     scoreobj.className="score";
     scoreobj.innerHTML="You got "+score+"/10 correct"+((score!=10)? "<div class=comment>=C</div>" : "");
@@ -208,9 +213,9 @@ intf.tryanswer=function(ans,id){
     });
     restart.type="button";
     restart.value="Play Again?";
-    intf.dloc.appendChild(scoreobj);
-    intf.dloc.appendChild(scoresub);
-    intf.dloc.appendChild(restart);
+    ac(intf.dloc,scoreobj);
+    ac(intf.dloc,scoresub);
+    ac(intf.dloc,restart);
     d.gebi("uname").focus();
     }
   else
@@ -278,16 +283,16 @@ ael(window,"load",function(){
   var hd=d.createElement("h2");
   hd.innerText="Pontifo!";
   intf.dloc=d.gebi("something");
-  d.gebi("persistent").appendChild(hd);
+  ac(d.gebi("persistent"),hd);
   var scorer=d.createElement("div");
   scorer.id="scorer";
-  d.gebi("persistent").appendChild(scorer);
+  ac(d.gebi("persistent"),scorer);
 
   if(window.location.pathname=="/"){
     intf.titlescreen();}
   else if(window.location.pathname=="/leaderboard"){
     var leaders=d.createElement("div");leaders.className="leaderboard";leaders.innerHTML="";
-    intf.dloc.appendChild(leaders);
+    ac(intf.dloc,leaders);
     intf.fillleaderboard(leaders);
     var restart=d.createElement("input");
     ael(restart,"click",function(){
@@ -297,7 +302,7 @@ ael(window,"load",function(){
     });
     restart.type="button";
     restart.value="New Game";
-    intf.dloc.appendChild(restart);
+    ac(intf.dloc,restart);
     restart.focus();
   }
 });
