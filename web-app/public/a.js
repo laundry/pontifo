@@ -1,6 +1,8 @@
 window.d=document;
 window.d.gebi=window.d.getElementById;
 window.intf={};
+if(window.history.pushState==undefined)
+  window.history.pushState=function(){};
 window.rm=function(obj){
   if(obj.remove!=undefined)
     obj.remove();
