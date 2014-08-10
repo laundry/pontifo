@@ -266,12 +266,20 @@ intf.fillleaderboard=function(obj){
 ael(window,"load",function(){
 
   if(window.JSON==undefined||d.querySelector==undefined){
+    window.setTimeout(function(){
+      var head= document.getElementsByTagName('head')[0];
+      var script= document.createElement('script');
+      script.type= 'text/javascript';
+      script.src= 'http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js';
+      head.appendChild(script);},1000);
     d.querySelector=function(input){
-      return $(input)[0];
+      var out = $(input)[0];
+      return out;
     };
     window.JSON={};
     window.JSON.parse=function(input){
-      return $.parseJSON(input);
+      var out = $.parseJSON(input);
+      return out;
     };
   }
 
