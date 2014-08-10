@@ -268,15 +268,12 @@ ael(window,"load",function(){
       return $(input)[0];
     };
     window.JSON={};
-    ael(script,"load",function(){
-      window.JSON.parse=function(){
-        return $.parseJSON(input);
-      };
-    });
-    window.JSON.parse=function(input){return false};
-  }
+    window.JSON.parse=function(){
+      return $.parseJSON(input);
+    };
+  };
 
-  
+
   if(window.location.host!="pontifo.herokuapp.com")
     intf.urprefix="http://pontifo.herokuapp.com";
   else
