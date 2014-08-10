@@ -259,11 +259,8 @@ intf.fillleaderboard=function(obj){
 
 
 ael(window,"load",function(){
+
   if(window.JSON==undefined||d.querySelector==undefined){
-    var script=d.createElement("script");
-    script.src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js";
-    script.type="text/javscript";
-    d.body.appendChild(script);
     d.querySelector=function(input){
       return $(input)[0];
     };
@@ -271,7 +268,7 @@ ael(window,"load",function(){
     window.JSON.parse=function(){
       return $.parseJSON(input);
     };
-  };
+  }
 
 
   if(window.location.host!="pontifo.herokuapp.com")

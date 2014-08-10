@@ -36,6 +36,7 @@ class App < Sinatra::Base
 
   before do
     headers['Access-Control-Allow-Origin'] = '*'
+    headers["Content-Security-Policy"]="script-src 'self' ajax.googleapis.com;"
   end
 
   get '/' do
