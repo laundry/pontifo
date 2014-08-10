@@ -56,6 +56,10 @@ class App < Sinatra::Base
   get '/game/save' do
     content_type :json
 
+    if params[:name].nil? || params[:name].length == 0 || params[:score].nil?
+      return {:error => "You must provide name and score"}
+    end
+
     game = Game.new
     game.update_attributes(:name => params[:name], :score => params[:score])
     game.save!
