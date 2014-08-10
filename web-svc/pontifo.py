@@ -1,5 +1,5 @@
 import os, pymongo, json, random, nltk
-from flask import Flask, request, redirect
+from flask import Flask, request, redirect, make_response
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -90,9 +90,9 @@ def relation_score():
     one = request.args.get('one', '')
     two = request.args.get('two', '')
     collection = get_relation_collection()
-    sout=str(distance_score(one, two, collection))
-    resp=make_response(sout,200)
-    resp.headers["Access-Control-Allow-Origin"]="*"
+    sout = str(distance_score(one, two, collection))
+    resp = make_response(sout,200)
+    resp.headers["Access-Control-Allow-Origin"] = "*"
     return resp
 
 @app.route('/relation-query', methods=['GET'])
@@ -154,4 +154,8 @@ def hint():
     target = request.args.get('target', '')
     distance = request.args.get('distance', 1)
     collection = get_relation_collection()
-    return str(hint_by_distance(target, distance, collection))
+    sout = str(hint_by_distance(target, distance, collection))
+    resp = make_response(sout,200)
+    resp.headers["Access-Control-Allow-Origin"] = "*"
+    return resp
+
