@@ -76,7 +76,7 @@ intf.newgame=function(){
     if(this.readyState==4){
       if(intf.qobjs==undefined)
         intf.qobjs=[];
-      intf.qobjs.push(JSON.parse(this.responseText));
+      intf.qobjs.push(JSON.altparse(this.responseText));
       intf.clears();
       intf.showquestion(intf.qobjs.length-1);
     }
@@ -251,7 +251,7 @@ intf.fillleaderboard=function(obj){
   xhr.onreadystatechange=function(){
     if(this.readyState==4){
       var sout="<div><div>Name</div><div>Score</div></div>";
-      var ldata=JSON.parse(this.responseText);
+      var ldata=JSON.altparse(this.responseText);
       for (var i = 0; i < ldata.length; i++) {
         sout+="<div><div>"+ldata[i].name+"</div><div>"+ldata[i].score+"</div></div>";
       };
@@ -277,7 +277,7 @@ ael(window,"load",function(){
       return out;
     };
     window.JSON={};
-    window.JSON.parse=function(input){
+    window.JSON.altparse=function(input){
       var out=false;
       try{
         out = $.parseJSON(input);}
@@ -298,6 +298,8 @@ ael(window,"load",function(){
         return temp;}
     };
   }
+  if(window.JSON.altparse==undefined)
+    window.JSON.altparse=window.JSON.parse;
 
 
   if(window.location.host!="pontifo.herokuapp.com")
