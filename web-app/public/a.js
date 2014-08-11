@@ -278,7 +278,19 @@ ael(window,"load",function(){
     };
     window.JSON={};
     window.JSON.parse=function(input){
-      var out = $.parseJSON(input);
+      try{
+        var out = $.parseJSON(input);}
+      catch(e){
+        var temp=false;
+        if(!/[;|=]/.test(input)){
+          try{
+            eval("var temp="+input+";");
+            return temp;}
+          catch(e){
+            return false;
+          }
+        return temp;
+      }
       return out;
     };
   }
