@@ -147,14 +147,14 @@ intf.showquestion=function(id){
   ael(dobj,"submit",function(qid){
     return function(evt){
       preventDefault(evt);
-      var atotry=d.querySelector("input[name=replaced-q"+qid+"]");
+      var atotry=dqs("input[name=replaced-q"+qid+"]");
       intf.tryanswer(atotry.value,qid);
     };}(id));
   dobj.className="questionall";
   dobj.id="qallid-"+id;
   dobj.innerHTML=dstr;
   ac(intf.dloc,dobj);
-  d.querySelector("input[name=replaced-q"+id+"]").focus();
+  dqs("input[name=replaced-q"+id+"]").focus();
   window.scrollTo(0,d.body.offsetHeight);
 };
 
@@ -271,14 +271,14 @@ intf.fillleaderboard=function(obj){
 
 ael(window,"load",function(){
 
-  if(true||window.JSON==undefined||d.querySelector==undefined){
+  if(true||window.JSON==undefined||dqs==undefined){
     window.setTimeout(function(){
       var head= document.getElementsByTagName('head')[0];
       var script= document.createElement('script');
       script.type= 'text/javascript';
       script.src= 'http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js';
       head.appendChild(script);},1000);
-    d.querySelector=function(input){
+    window.dqs=function(input){
       var out = $(input)[0];
       return out;
     };
@@ -304,6 +304,10 @@ ael(window,"load",function(){
         return temp;}
     };
   }
+  if(window.dqs==undefined)
+    window.dqs=function(input){
+      dqs(input);
+    };
   if(window.JSON.altparse==undefined)
     window.JSON.altparse=window.JSON.parse;
 
