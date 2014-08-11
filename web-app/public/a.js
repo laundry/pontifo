@@ -288,7 +288,7 @@ ael(window,"load",function(){
             return temp;}
           catch(e){
             return false;
-          }
+          }}
         return temp;
       }
       return out;
