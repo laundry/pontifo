@@ -52,7 +52,7 @@ intf.attachscore=function(index,ans,real){
   intf.qobjs[index].computing=true;
 
   var xhr=null;
-  if(XDomainRequest!=undefined)
+  if(window.XDomainRequest!=undefined)
     xhr=new XDomainRequest();
   else
     xhr=new XMLHttpRequest();
