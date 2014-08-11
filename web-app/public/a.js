@@ -50,7 +50,12 @@ intf.attachscore=function(index,ans,real){
     return;
   }
   intf.qobjs[index].computing=true;
-  var xhr=new XMLHttpRequest();
+
+  var xhr=null;
+  if(XDomainRequest!=undefined)
+    xhr=new XDomainRequest();
+  else
+    xhr=new XMLHttpRequest();
   xhr.onreadystatechange=function(){
     if(this.readyState==4){
       intf.qobjs[index].score=Math.round(11*(Math.pow(.843,parseInt(this.responseText)))-1);
