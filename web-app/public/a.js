@@ -68,7 +68,8 @@ intf.attachscore=function(index,ans,real){
 intf.updatescore=function(index){
   var total=0;
   for (var i = 0; i <= index%10; i++) {
-    total+=intf.qobjs[index-i].score;
+    if(intf.qobjs[index-i].score!=undefined)
+      total+=intf.qobjs[index-i].score;
   };
   d.gebi("scorer").innerHTML=total;
 };
