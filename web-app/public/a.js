@@ -265,7 +265,7 @@ intf.fillleaderboard=function(obj){
 
 ael(window,"load",function(){
 
-  if(window.JSON==undefined||d.querySelector==undefined){
+  if(true||window.JSON==undefined||d.querySelector==undefined){
     window.setTimeout(function(){
       var head= document.getElementsByTagName('head')[0];
       var script= document.createElement('script');
@@ -278,9 +278,15 @@ ael(window,"load",function(){
     };
     window.JSON={};
     window.JSON.parse=function(input){
+      var out=false;
       try{
-        var out = $.parseJSON(input);}
+        out = $.parseJSON(input);}
       catch(e){
+        out=false;
+      }
+      if(out!=false)
+        return out;
+      else{
         var temp=false;
         if(!/[;|=]/.test(input)){
           try{
@@ -289,9 +295,7 @@ ael(window,"load",function(){
           catch(e){
             return false;
           }}
-        return temp;
-      }
-      return out;
+        return temp;}
     };
   }
 
