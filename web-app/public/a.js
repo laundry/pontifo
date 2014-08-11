@@ -51,17 +51,22 @@ intf.attachscore=function(index,ans,real){
   }
   intf.qobjs[index].computing=true;
 
-  var xhr=null;
-  if(window.XDomainRequest!=undefined)
-    xhr=new XDomainRequest();
-  else
-    xhr=new XMLHttpRequest();
-  xhr.onreadystatechange=function(){
-    if(this.readyState==4){
+  var complete=function(){
+    if(this.readyState==4||(window.XDomainRequest!=undefined)){
       intf.qobjs[index].score=Math.round(11*(Math.pow(.843,parseInt(this.responseText)))-1);
       intf.updatescore(index);
     }
   };
+
+  var xhr=null;
+  if(window.XDomainRequest!=undefined){
+    xhr=new XDomainRequest();
+    xhr.onload=complete;
+  }
+  else{
+    xhr=new XMLHttpRequest();
+    xhr.onreadystatechange=complete;
+  }
   xhr.open("GET","http://pontifo-svc.herokuapp.com/relation-score?one="+ans+"&two="+real);
   xhr.send();
 }
@@ -87,7 +92,7 @@ intf.newgame=function(){
       intf.showquestion(intf.qobjs.length-1);
     }
   };
-  xhr.open("GET",intf.urprefix+( (!intf.qobjs.length||intf.urprefix!="") ? "/game/new" : "/game/next_quote" ));
+  xhr.open("GET",intf.urprefix+( (intf.qobjs.length%10||intf.urprefix!="") ? "/game/new" : "/game/next_quote" ));
   xhr.send();
 };
 
@@ -271,7 +276,7 @@ intf.fillleaderboard=function(obj){
 
 ael(window,"load",function(){
 
-  if(true||window.JSON==undefined||dqs==undefined){
+  if(window.JSON==undefined||document.querySelector==undefined){
     window.setTimeout(function(){
       var head= document.getElementsByTagName('head')[0];
       var script= document.createElement('script');
@@ -306,7 +311,7 @@ ael(window,"load",function(){
   }
   if(window.dqs==undefined)
     window.dqs=function(input){
-      dqs(input);
+      return document.querySelector(input);
     };
   if(window.JSON.altparse==undefined)
     window.JSON.altparse=window.JSON.parse;
